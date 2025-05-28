@@ -1,6 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const CarRental = require("./rentalPrice");
+const { CarRental } = require("./rentalPrice");
 const fs = require("fs");
 
 const app = express();
@@ -22,6 +22,10 @@ app.post("/", (req, res) => {
         const endDate = new Date(post.dropoffdate);
         const timeDiff = endDate.getTime() - startDate.getTime();
         const rentalDays = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
+
+        if (!post.pickupdate || !post.dropoffdate) {
+            throw new Error("Pickup and dropoff dates are required");
+        }
 
         if (rentalDays <= 0) throw new Error("Invalid date range");
 
